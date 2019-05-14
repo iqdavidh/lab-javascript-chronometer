@@ -66,6 +66,9 @@ class Chronometer {
         this.lapso = new Lapso();
     }
 
+    getLabelBotonLeft(){
+        return this.intervalId ===0 ? 'START':'STOP';
+    }
 
     start_or_stop() {
 
