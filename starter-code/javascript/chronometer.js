@@ -6,6 +6,12 @@ class Lapso {
         this.min = 0;
     }
 
+
+    getTexto(){
+
+        return this.getTextoMin() + ':' + this.getTextoS() + ':' + this.getTextoMS();
+    }
+
     getTextoMS() {
         return (
             (this.ms < 100 ? '0' : '') +
@@ -35,11 +41,11 @@ class Lapso {
 
     add10MiliSegundo() {
 
-        this.ms+=10;
+        this.ms += 10;
 
         if (this.ms === 1000) {
             this.addSegundo();
-            this.ms=0;
+            this.ms = 0;
         }
 
     }
@@ -64,10 +70,15 @@ class Chronometer {
 
     inicializarLapso() {
         this.lapso = new Lapso();
+        this.lapsoIntervalo = new Lapso();
     }
 
-    getLabelBotonLeft(){
-        return this.intervalId ===0 ? 'START':'STOP';
+    getLabelBotonLeft() {
+        return this.intervalId === 0 ? 'START' : 'STOP';
+    }
+
+    getLabelBotonRigth() {
+        return this.intervalId === 0 ? 'RESET' : 'SPLIT';
     }
 
     start_or_stop() {
@@ -77,7 +88,8 @@ class Chronometer {
             this.inicializarLapso();
 
             let fnOnAvanzaCronometro = () => {
-                this.lapso.add10MiliSegundo()
+                this.lapso.add10MiliSegundo();
+                this.lapsoIntervalo.add10MiliSegundo();
                 this.callBackOnAvance(this.lapso);
             };
 
@@ -98,15 +110,28 @@ class Chronometer {
         return this.intervalId === 0 ? 'STOP' : 'RUNNING';
     }
 
-    reset() {
+    reset_or_split( callback) {
 
-        this.inicializarLapso();
+        if (this.intervalId === 0) {
 
-        this.intervalId = 0;
-        clearTimeout(this.intervalId);
+            this.listaLapsos = [];
+            this.inicializarLapso();
 
-        this.listaLapsos = [];
+        } else {
 
+
+            this.listaLapsos.push(this.lapsoIntervalo);
+
+            callback(this.lapsoIntervalo);
+
+            this.lapsoIntervalo=new Lapso();
+
+        }
+
+    }
+
+    getLastLapso(){
+        return this.lapsoIntervalo;
     }
 
 

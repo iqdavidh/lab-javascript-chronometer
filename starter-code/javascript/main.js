@@ -4,8 +4,10 @@ var minUni = document.getElementById('minUni');
 var secDec = document.getElementById('secDec');
 var secUni = document.getElementById('secUni');
 
+
 var milCentena = document.getElementById('milCentena');
 
+var elemOLLapso =document.getElementById('splits');
 
 function updateDigitos(ms,s,m){
     milCentena.innerText = ms.substr(0, 1);
@@ -46,14 +48,40 @@ btnLeft.onclick = (event) => {
     console.log(cronometro.intervalId);
     cronometro.start_or_stop();
     btnLeft.innerText = cronometro.getLabelBotonLeft();
+    btnRight.innerText = cronometro.getLabelBotonRigth();
+
+    if(cronometro.intervalId===0){
+        /*el ultimo lapso*/
+        let li=document.createElement("li");
+        li.innerHTML= cronometro.getLastLapso().getTexto();
+        elemOLLapso.appendChild(li);
+
+    }else{
+        elemOLLapso.innerHTML='' ;
+    }
+
+
 };
 
 
 btnRight.onclick = (event) => {
 
-    if(cronometro.getLabelBotonLeft()==='START'){
+
+    if(cronometro.intervalId===0){
+        elemOLLapso.innerHTML='' ;
         updateDigitos("000","00","00");
+    }else{
+        let fn=(lapso)=>{
+            let li=document.createElement("li");
+            li.innerHTML=lapso.getTexto();
+            elemOLLapso.appendChild(li);
+        }
+
+        cronometro.reset_or_split(fn);
+
     }
-    cronometro.reset();
+
+
 
 };
+
